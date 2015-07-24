@@ -2,6 +2,8 @@
 
 namespace WarehouseShipping\Db;
 
+/* Class with queries for product-related reads/writes
+ */
 class ProductApi {
   public static function addProduct($mysqli, $name, $dimensions, $weight){
     $stmt = $mysqli->prepare("INSERT INTO `product` (`name`, `dimensions`, `weight`) VALUES (?, ?, ?)");

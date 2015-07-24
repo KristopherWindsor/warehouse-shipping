@@ -2,6 +2,8 @@
 
 namespace WarehouseShipping;
 
+/* This class runs the command-line application
+ */
 class Application {
 
   private $mysql;
@@ -65,6 +67,7 @@ Enter one product name per line, empty line when order is done
 Optionally, enter <product name>=<quantity> to add multiple
 
 <?php
+    // allow user to enter the items for this order
     $stdin = fopen('php://stdin', 'r');
     while ($line = trim(fgets($stdin))){
       // handle optional <product name>=<quantity>
@@ -94,6 +97,7 @@ Optionally, enter <product name>=<quantity> to add multiple
       echo '  ' . substr( $product . str_repeat('.', 30), 0, 30 ) . ' ' . $quantity . "\n";
     }
 
+    // get all warehouses with the required inventory, then pick the closest one
     $warehouses = Db\WarehouseApi::getStockedWarehouses($this->mysqli, $orders_by_id);
     $closest = null;
     $best_dist = null;

@@ -2,6 +2,8 @@
 
 namespace WarehouseShipping\Db;
 
+/* This class loads DB configuration from file and creates a DB connection
+ */
 class Connection {
   public static function createMysqli(){
     $db_file = dirname( dirname( __DIR__ ) ) . '/inc/database.php';

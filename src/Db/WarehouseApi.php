@@ -2,6 +2,8 @@
 
 namespace WarehouseShipping\Db;
 
+/* Class with queries for warehouse-related reads/writes
+ */
 class WarehouseApi {
   public static function addWarehouse($mysqli, $name, $address, $lat, $lon){
     $stmt = $mysqli->prepare("INSERT INTO `warehouse` (`name`, `address`, `lat`, `lon`) VALUES (?, ?, ?, ?)");
@@ -25,6 +27,8 @@ class WarehouseApi {
     throw new \Exception('Warehouse not found');
   }
 
+  /* Add to the inventory of a given product at a given warehouse
+   */
   public static function addProducts($mysqli, $warehouse_id, $product_id, $quantity){
     $stmt = $mysqli->prepare("
       INSERT INTO `warehouse_products` VALUES (?, ?, ?)
@@ -34,6 +38,10 @@ class WarehouseApi {
     $stmt->close();
   }
 
+  /* Return all warehouses that have sufficient inventory to fulfill an order (in no specified order).
+   * @param array $quantities_requested a <product id> -> <quantity> map
+   * @return generator
+   */
   public static function getStockedWarehouses($mysqli, $quantities_requested){
     $subqueries = [];
     foreach ($quantities_requested as $product_id => $quantity)

@@ -3,6 +3,10 @@
 namespace WarehouseShipping;
 
 class GeoLookup {
+
+  /* Google Geocode API client code
+   * Note: this function is roughly copied from the Internet.
+   */
   public static function getLatLon($address){
     $ctx = stream_context_create( ['http'=> [ 'timeout' => 20 ] ] );
     $url = 'http://maps.google.com/maps/api/geocode/json?sensor=false&address=' . urlencode($address);

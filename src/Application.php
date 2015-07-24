@@ -55,4 +55,62 @@ php warehouse-shipping.php order <destination address>
     Db\WarehouseApi::addProducts($this->mysqli, $warehouse->id, $product->id, $quantity);
     echo "OK\n";
   }
+
+  private function order($dest_address){
+    $geo = GeoLookup::getLatLon($dest_address);
+    $orders_by_name = $orders_by_id = [];
+    echo "You want to create an order shipping to " . $geo[2];?>
+
+Enter one product name per line, empty line when order is done
+Optionally, enter <product name>=<quantity> to add multiple
+
+<?php
+    $stdin = fopen('php://stdin', 'r');
+    while ($line = trim(fgets($stdin))){
+      // handle optional <product name>=<quantity>
+      $tmp = strrpos($line, '=');
+      if ($tmp !== false && ctype_digit(substr($line, $tmp + 1))){
+        $quantity = substr($line, $tmp + 1);
+        $line = substr($line, 0, $tmp);
+      } else {
+        $quantity = 1;
+      }
+
+      // attempt to find product, add it to the order
+      try {
+        $product = Db\ProductApi::getProduct($this->mysqli, $line);
+        echo "Product added to order (quantity=" . $quantity . ")\n";
+      } catch (\Exception $e){
+        echo "Cannot find the product -- please try again\n";
+        continue;
+      }
+      @$orders_by_name[$product->name] += $quantity;
+      @$orders_by_id[$product->id] += $quantity;
+    }
+    fclose($stdin);
+
+    echo "Order Summary:\n";
+    foreach ($orders_by_name as $product => $quantity){
+      echo '  ' . substr( $product . str_repeat('.', 30), 0, 30 ) . ' ' . $quantity . "\n";
+    }
+
+    $warehouses = Db\WarehouseApi::getStockedWarehouses($this->mysqli, $orders_by_id);
+    $closest = null;
+    $best_dist = null;
+    foreach ($warehouses as $i){
+      $this_dist = GeoMath::vincentyGreatCircleDistance($geo[0], $geo[1], $i->lat, $i->lon);
+      if ($best_dist === null || $this_dist < $best_dist){
+        $closest = $i;
+        $best_dist = $this_dist;
+      }
+    }
+
+    // final results
+    if ($closest === null){
+      echo "\nNo single warehouse has all of the items requested. Sorry\n";
+    } else {
+      echo "\nThis order will be fulfilled by this warehouse: " . $closest->name . "\n";
+      echo "The order destination is " . number_format($best_dist, 1) . "km away from the warehouse.\n";
+    }
+  }
 }

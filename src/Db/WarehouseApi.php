@@ -33,4 +33,22 @@ class WarehouseApi {
     $stmt->execute();
     $stmt->close();
   }
+
+  public static function getStockedWarehouses($mysqli, $quantities_requested){
+    $subqueries = [];
+    foreach ($quantities_requested as $product_id => $quantity)
+      $subqueries[] = sprintf('`id` IN(
+          SELECT `id` FROM `warehouse`
+          LEFT JOIN `warehouse_products` ON `warehouse`.`id` = `warehouse_products`.`warehouse_id`
+          WHERE `product_id` = %d AND `quantity` >= %d
+        )', $product_id, $quantity);
+    $sql = 'SELECT * FROM `warehouse` ';
+    if ($subqueries)
+      $sql .= 'WHERE ' . implode(' AND ', $subqueries);
+
+    $result = $mysqli->query($sql);
+    while ($obj = $result->fetch_object())
+      yield $obj;
+    $result->close();
+  }
 }

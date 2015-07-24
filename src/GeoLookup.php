@@ -18,6 +18,6 @@ class GeoLookup {
       }
     }
 
-    throw new Exception('Error with GeoLookup');
+    throw new \Exception('GeoLookup failed for this address');
   }
 }

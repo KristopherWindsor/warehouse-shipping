@@ -13,16 +13,20 @@ class Application {
       die( "Please config this application for your system. " . $e->getMessage() . "\n" );
     }
 
-    if ($argc == 5 && $argv[1] == 'add' && $argv[2] == 'warehouse')
-      $this->addWarehouse($argv[3], $argv[4]);
-    else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'product')
-      $this->addProduct($argv[3], $argv[4], $argv[5]);
-    else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'inventory')
-      $this->addInventory($argv[3], $argv[4], $argv[5]);
-    else if ($argc == 3 && $argv[1] == 'order')
-      $this->order($argv[2]);
-    else
-      $this->help();
+    try {
+      if ($argc == 5 && $argv[1] == 'add' && $argv[2] == 'warehouse')
+        $this->addWarehouse($argv[3], $argv[4]);
+      else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'product')
+        $this->addProduct($argv[3], $argv[4], $argv[5]);
+      else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'inventory')
+        $this->addInventory($argv[3], $argv[4], $argv[5]);
+      else if ($argc == 3 && $argv[1] == 'order')
+        $this->order($argv[2]);
+      else
+        $this->help();
+    } catch (\Exception $e){
+      die("Error: " . $e->getMessage() . "\n");
+    }
   }
 
   private function help(){
@@ -35,7 +39,8 @@ php warehouse-shipping.php order <destination address>
   }
 
   private function addWarehouse($name, $address){
-    
+    $geo = GeoLookup::getLatLon($address);
+    Db\WarehouseApi::addWarehouse($this->mysqli, $name, $geo[2], $geo[0], $geo[1]);
   }
 
   private function addProduct($name, $dimensions, $weight){

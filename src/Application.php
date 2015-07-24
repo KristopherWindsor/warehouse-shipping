@@ -66,7 +66,7 @@ php warehouse-shipping.php order <destination address>
 Enter one product name per line, empty line when order is done
 Optionally, enter <product name>=<quantity> to add multiple
 
-<?php
+><?php
     // allow user to enter the items for this order
     $stdin = fopen('php://stdin', 'r');
     while ($line = trim(fgets($stdin))){
@@ -82,9 +82,9 @@ Optionally, enter <product name>=<quantity> to add multiple
       // attempt to find product, add it to the order
       try {
         $product = Db\ProductApi::getProduct($this->mysqli, $line);
-        echo "Product added to order (quantity=" . $quantity . ")\n";
+        echo "Product added to order (quantity=" . $quantity . ")\n>";
       } catch (\Exception $e){
-        echo "Cannot find the product -- please try again\n";
+        echo "Cannot find the product -- please try again\n>";
         continue;
       }
       @$orders_by_name[$product->name] += $quantity;

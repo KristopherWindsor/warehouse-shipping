@@ -14,13 +14,13 @@ class Application {
     }
 
     if ($argc == 5 && $argv[1] == 'add' && $argv[2] == 'warehouse')
-      $this->createWarehouse();
+      $this->addWarehouse($argv[3], $argv[4]);
     else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'product')
-      $this->createProduct();
+      $this->addProduct($argv[3], $argv[4], $argv[5]);
     else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'inventory')
-      $this->addInventory();
-    else if ($argc == 2 && $argv[1] == 'order')
-      $this->order();
+      $this->addInventory($argv[3], $argv[4], $argv[5]);
+    else if ($argc == 3 && $argv[1] == 'order')
+      $this->order($argv[2]);
     else
       $this->help();
   }
@@ -30,7 +30,19 @@ class Application {
 php warehouse-shipping.php add warehouse <name> <address>
 php warehouse-shipping.php add product <name> <dimensions> <weight>
 php warehouse-shipping.php add inventory <warehouse> <product> <quantity>
-php warehouse-shipping.php order
+php warehouse-shipping.php order <destination address>
 <?php
+  }
+
+  private function addWarehouse($name, $address){
+    
+  }
+
+  private function addProduct($name, $dimensions, $weight){
+
+  }
+
+  private function addInventory($warehouse, $product, $quantity){
+
   }
 }

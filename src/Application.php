@@ -41,10 +41,12 @@ php warehouse-shipping.php order <destination address>
   private function addWarehouse($name, $address){
     $geo = GeoLookup::getLatLon($address);
     Db\WarehouseApi::addWarehouse($this->mysqli, $name, $geo[2], $geo[0], $geo[1]);
+    echo "OK\n";
   }
 
   private function addProduct($name, $dimensions, $weight){
-
+    Db\ProductApi::addProduct($this->mysqli, $name, $dimensions, $weight);
+    echo "OK\n";
   }
 
   private function addInventory($warehouse, $product, $quantity){

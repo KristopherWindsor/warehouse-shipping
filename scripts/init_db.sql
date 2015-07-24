@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS `product` (
 ) DEFAULT CHARACTER SET utf8;
 
 CREATE TABLE IF NOT EXISTS `warehouse_products` (
-  `warehouse_id` INT NOT NULL UNIQUE,
-  `product_id` INT NOT NULL UNIQUE,
+  `warehouse_id` INT NOT NULL,
+  `product_id` INT NOT NULL,
   `quantity` INT NOT NULL,
   PRIMARY KEY (`warehouse_id`, `product_id`)
 ) DEFAULT CHARACTER SET utf8;

@@ -18,7 +18,7 @@ class Application {
         $this->addWarehouse($argv[3], $argv[4]);
       else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'product')
         $this->addProduct($argv[3], $argv[4], $argv[5]);
-      else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'inventory')
+      else if ($argc == 6 && $argv[1] == 'add' && $argv[2] == 'inventory' && $argv[5] > 0)
         $this->addInventory($argv[3], $argv[4], $argv[5]);
       else if ($argc == 3 && $argv[1] == 'order')
         $this->order($argv[2]);
@@ -50,6 +50,9 @@ php warehouse-shipping.php order <destination address>
   }
 
   private function addInventory($warehouse, $product, $quantity){
-
+    $warehouse = Db\WarehouseApi::getWarehouse($this->mysqli, $warehouse);
+    $product = Db\ProductApi::getProduct($this->mysqli, $product);
+    Db\WarehouseApi::addProducts($this->mysqli, $warehouse->id, $product->id, $quantity);
+    echo "OK\n";
   }
 }

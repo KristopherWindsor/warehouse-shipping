@@ -11,4 +11,14 @@ class ProductApi {
       throw new \Exception('Cannot add product, it probably already exists');
     $stmt->close();
   }
+
+  public static function getProduct($mysqli, $name){
+    $stmt = $mysqli->prepare("SELECT * FROM `product` WHERE `name` = ?");
+    $stmt->bind_param('s', $name);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_object())
+      return $row;
+    throw new \Exception('Product not found');
+  }
 }
